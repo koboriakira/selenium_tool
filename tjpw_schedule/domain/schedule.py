@@ -50,5 +50,6 @@ class Item:
     seat_type: SeatType
     note: Optional[Note] = None
 
-    def __str__(self):
-        return f"大会名: {self.tournament_name}\n日時: {self.date}\n会場: {self.venue}\n座種: {self.seat_type}\n備考: {self.note}"
+    def overview(self) -> str:
+        """ 席種、備考を除いた試合の概要を取得 """
+        return f"{self.tournament_name.value}\n{self.date.value}\n{self.venue.value}"
