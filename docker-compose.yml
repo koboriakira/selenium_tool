@@ -1,0 +1,28 @@
+# @format
+
+version: "3.7"
+services:
+  chrome:
+    image: seleniarm/standalone-chromium:114.0
+    ports:
+      - 4444:4444
+      - 5900:5900
+      - 7900:7900 #7900番ポートにアクセスするとRSpecのように自動制御されているブラウザが確認できます。
+    shm_size: "2g"
+    tty: true
+    networks:
+      - default
+  app:
+    container_name: tjpw-schedule
+    depends_on:
+      - chrome
+    build:
+      context: .
+      dockerfile: ./docker/tjpw_schedule/Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      - SELENIUM_URL=http://chrome:4444/wd/hub
+    tty: true
+    networks:
+      - default
