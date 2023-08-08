@@ -15,8 +15,9 @@ class Scraping:
     def __init__(self):
         # Seleniumが起動しているか確認
         response = requests.get(SELENIUM_URL + "/wd/hub/status")
-        if not response.json()["value"]["ready"]:
-            raise Exception("Selenium is not ready")
+        if not response.ok or not response.json()["value"]["ready"]:
+            raise Exception("Selenium is not ready. url: " +
+                            SELENIUM_URL + "/wd/hub/status")
 
     def get_detail_urls(self, target_date: datetime):
         """ 試合詳細のURLを取得 """

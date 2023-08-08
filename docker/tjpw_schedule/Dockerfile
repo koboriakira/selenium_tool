@@ -7,7 +7,7 @@ ENV LANGUAGE=en_US:en
 
 WORKDIR /app
 
-COPY ./requirements.txt ./requirements.txt
+COPY ./requirements.txt /app/requirements.txt
 
 RUN \
   pip install -r requirements.txt
