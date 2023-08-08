@@ -34,9 +34,25 @@ class Scraping:
         finally:
             driver.quit()
 
+    def get_detail(self, url: str):
+        driver = self.get_driver()
+        try:
+            print("get")
+            driver.implicitly_wait(2)
+            driver.get(url)
+            print("wait")
+            elements = driver.find_elements(
+                By.CLASS_NAME, "Article_Table__item")
+            for element in elements:
+                print(element.text)
+        finally:
+            driver.quit()
+
 
 if __name__ == "__main__":
     # python -m tjpw_schedule.scraping
     scraping = Scraping()
-    detail_urls = scraping.get_detail_urls()
-    print(list(detail_urls))
+    detail_urls = list(scraping.get_detail_urls())
+    print(detail_urls)
+    for detail_url in detail_urls:
+        scraping.get_detail(detail_url)
