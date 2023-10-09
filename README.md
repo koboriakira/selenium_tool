@@ -2,11 +2,13 @@
 
 ## 目的
 
-東京女子プロレスの試合スケジュール(<https://www.ddtpro.com/schedules?teamId=tjpw>)を、自身のGoogleカレンダーに反映させ、観戦の予定が組みやすくなるようにしたもの。
+東京女子プロレスの試合スケジュール(<https://www.ddtpro.com/schedules?teamId=tjpw>)を、カレンダーに反映させ、観戦の予定が組みやすくなるようにしたもの。
 
 ### いまできること
 
-- プログラムを実行すると、スケジュールが標準出力される
+- 指定した期間の、東京女子プロレスの「大会情報」をスクレイピングする
+- 取得したデータをNotionの「プロレス」に反映
+
 
 ### やりたいができてないこと
 
@@ -16,15 +18,16 @@
 
 ## アーキテクチャ
 
-- Dockerコンテナ上で動作
-  - app: アプリケーション
-    - python3.11
-  - chrome: seleniarm/standalone-chromiumイメージをベースにした、Chromiumを起動するためのコンテナ
-  - アプリケーション(appコンテナ)がSelenium(chromeコンテナ)にリモート接続し、Chromiumを操作する
+Dockerコンテナ上で動作。
+
+- app: アプリケーション
+  - python3.11
+- chrome: seleniarm/standalone-chromiumイメージをベースにした、Chromiumを起動するためのコンテナ
+- アプリケーション(appコンテナ)がSelenium(chromeコンテナ)にリモート接続し、Chromiumを操作する
 
 ### Selenium採用の理由
 
-BeautifulSoupなどのHTMLパーサーを使っても良いが、スクレイピング対象のページがJavaScriptで動的に生成されるため、Seleniumを採用した。
+スクレイピング対象のページがJavaScriptで動的に生成されるため、Seleniumを採用した。
 
 ## システム概要
 
@@ -40,5 +43,7 @@ BeautifulSoupなどのHTMLパーサーを使っても良いが、スクレイピ
 
 ```bash
 docker-compose up
-docker-compose exec app python -m tjpw_schedule.scraping
+
+# start_date, end_dateをイジって実行する
+docker-compose exec app python -m tjpw_schedule
 ```
