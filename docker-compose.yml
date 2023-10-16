@@ -21,6 +21,8 @@ services:
       dockerfile: ./docker/tjpw_schedule/Dockerfile
     volumes:
       - .:/app
+    env_file:
+      - .env
     environment:
       - SELENIUM_URL=http://chrome:4444
     tty: true

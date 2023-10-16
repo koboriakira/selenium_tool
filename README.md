@@ -42,7 +42,7 @@ Dockerコンテナ上で動作。
 ### プログラムの実行
 
 ```bash
-docker-compose up
+docker-compose up -d
 
 # start_date, end_dateをイジって実行する
 docker-compose exec app python -m tjpw_schedule

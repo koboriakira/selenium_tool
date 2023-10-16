@@ -12,6 +12,7 @@ from tjpw_schedule.domain.schedule import TournamentSchedule
 
 SELENIUM_URL = os.environ.get("SELENIUM_URL", "http://localhost:4444")
 DDTPRO_SCHEDULES = "https://www.ddtpro.com/schedules"
+WAIT_TIME = 5
 
 
 class ItemType(Enum):
@@ -121,7 +122,7 @@ class TjpwScraper:
         driver = _get_driver()
         try:
             result = []
-            driver.implicitly_wait(5)
+            driver.implicitly_wait(WAIT_TIME)
             driver.get(url)
             elements = driver.find_elements(By.CLASS_NAME, "Itemrow__content")
             for element in elements:
@@ -134,7 +135,7 @@ class TjpwScraper:
         """ 試合詳細を取得 """
         driver = _get_driver()
         try:
-            driver.implicitly_wait(2)
+            driver.implicitly_wait(WAIT_TIME)
             driver.get(url)
             elements = driver.find_elements(
                 By.CLASS_NAME, "Article_Table__item")
@@ -166,7 +167,8 @@ if __name__ == "__main__":
     # python -m tjpw_schedule.interface.selenium.tjpw_scraper
     scraping = TjpwScraper()
 
-    date_list = []
-    start_date = datetime(2023, 10, 1)
-    end_date = datetime(2023, 10, 1)
-    print(scraping.scrape(start_date, end_date))
+    # start_date = datetime(2023, 10, 1)
+    # end_date = datetime(2023, 10, 1)
+    # print(scraping.scrape(start_date, end_date))
+
+    print(scraping.scrape_detail(url="https://www.ddtpro.com/schedules/20448"))
