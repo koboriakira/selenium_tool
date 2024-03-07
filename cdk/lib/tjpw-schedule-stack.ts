@@ -49,6 +49,9 @@ export class TjpwScheduleStack extends cdk.Stack {
       environment: {
         SELENIUM_URL: `http://${chromeContainer.containerName}:4444`,
         TZ: 'Asia/Tokyo',
+        LAMBDA_GOOGLE_CALENDAR_API_DOMAIN: String(process.env.LAMBDA_GOOGLE_CALENDAR_API_DOMAIN),
+        LAMBDA_NOTION_API_DOMAIN: String(process.env.LAMBDA_NOTION_API_DOMAIN),
+        NOTION_SECRET: String(process.env.NOTION_SECRET),
       },
     });
 
