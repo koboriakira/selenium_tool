@@ -9,14 +9,18 @@ from dataclasses import dataclass
 from enum import Enum
 from tjpw_schedule.interface.selenium.Item_entity import ItemEntity
 from tjpw_schedule.domain.schedule import TournamentSchedule
+from tjpw_schedule.custom_logging import get_logger
 
 SELENIUM_URL = os.environ.get("SELENIUM_URL", "http://localhost:4444")
 DDTPRO_SCHEDULES = "https://www.ddtpro.com/schedules"
 WAIT_TIME = 5
 
+logger = get_logger(__name__)
+
 
 class ItemType(Enum):
-    """ 情報の種類 """
+    """情報の種類"""
+
     # 大会名
     TOURNAMENT_NAME = "大会名"
     # 日時
@@ -49,13 +53,10 @@ class ActiveTableItem:
 
     @staticmethod
     def from_web_element(element: WebElement):
-        element_title = element.find_element(
-            By.CLASS_NAME, "Article_Table__title")
+        element_title = element.find_element(By.CLASS_NAME, "Article_Table__title")
         item_type = ItemType(element_title.text)
-        element_body = element.find_element(
-            By.CLASS_NAME, "Article_Table__body")
-        return ActiveTableItem(item_type=item_type,
-                               value=element_body.text)
+        element_body = element.find_element(By.CLASS_NAME, "Article_Table__body")
+        return ActiveTableItem(item_type=item_type, value=element_body.text)
 
 
 @dataclass(frozen=True)
@@ -64,13 +65,13 @@ class ActiveTableItems:
 
     @staticmethod
     def from_web_elements(elements: list[WebElement]):
-        return ActiveTableItems([ActiveTableItem.from_web_element(element) for element in elements])
+        return ActiveTableItems(
+            [ActiveTableItem.from_web_element(element) for element in elements]
+        )
 
     def to_entity_with_url(self, url: str) -> ItemEntity:
-        """ ItemEntityに変換 """
-        params = {
-            "url": url
-        }
+        """ItemEntityに変換"""
+        params = {"url": url}
         for item in self.items:
             params[item.item_type.key()] = item.value
         return ItemEntity.from_dict(params)
@@ -81,22 +82,31 @@ class TjpwScraper:
         # Seleniumが起動しているか確認
         response = requests.get(SELENIUM_URL + "/wd/hub/status")
         if not response.ok or not response.json()["value"]["ready"]:
-            raise Exception("Selenium is not ready. url: " +
-                            SELENIUM_URL + "/wd/hub/status")
+            msg = "Selenium is not ready. url: " + SELENIUM_URL + "/wd/hub/status"
+            logger.exception(msg)
+            raise Exception(msg)
 
-    def scrape(self, start_date: datetime, end_date: datetime) -> list[TournamentSchedule]:
+    def scrape(
+        self, start_date: datetime, end_date: datetime
+    ) -> list[TournamentSchedule]:
         date_list = _make_date_list(start_date, end_date)
+        logger.debug(f"date_list: {date_list}")
 
         result: list[TournamentSchedule] = []
-        for target_date in date_list:
-            monthly_result = self._scrape_month(target_date)
+        for target_month in date_list:
+            monthly_result = self._scrape_month(target_month, start_date, end_date)
             result.extend(monthly_result)
 
         return result
 
-    def _scrape_month(self, target_date: datetime) -> list[TournamentSchedule]:
+    def _scrape_month(
+        self, target_month: datetime, start_date: datetime, end_date: datetime
+    ) -> list[TournamentSchedule]:
         # その月にふくまれる、試合詳細のURL一覧を取得
-        detail_urls = self.get_detail_urls(target_date=target_date)
+        detail_urls = self.get_detail_urls(
+            target_month=target_month, start_date=start_date, end_date=end_date
+        )
+
         # detail_urlsは試合のほかに選手の誕生日の場合もある
         # TODO: 誕生日はあとで対応するとして、まず試合のみに絞る。URLに`schedule`が含まれているもののみを対象とする
         detail_urls = [url for url in detail_urls if "schedule" in url]
@@ -107,17 +117,17 @@ class TjpwScraper:
             result.append(tournament_schedule)
         return result
 
-    def get_detail_urls(self, target_date: datetime) -> list[str]:
-        """ 試合詳細のURLを取得 """
-        # target_dateをyyyymm形式に変換
-        target_date_str = target_date.strftime("%Y%m")
-        params = {
-            "teamId": "tjpw",
-            "yyyymm": target_date_str
-        }
-        url = DDTPRO_SCHEDULES + "?" + \
-            "&".join([f"{key}={value}" for key, value in params.items()])
-        print(url)
+    def get_detail_urls(
+        self, target_month: datetime, start_date: datetime, end_date: datetime
+    ) -> list[str]:
+        """試合詳細のURLを取得"""
+        params = {"teamId": "tjpw", "yyyymm": target_month.strftime("%Y%m")}
+        url = (
+            DDTPRO_SCHEDULES
+            + "?"
+            + "&".join([f"{key}={value}" for key, value in params.items()])
+        )
+        logger.debug(url)
 
         driver = _get_driver()
         try:
@@ -126,19 +136,28 @@ class TjpwScraper:
             driver.get(url)
             elements = driver.find_elements(By.CLASS_NAME, "Itemrow__content")
             for element in elements:
-                result.append(element.get_attribute("href"))
+                date_row = element.find_element(By.CLASS_NAME, "Itemrow__date")
+                logger.debug(date_row.text)
+                event_datetime = convert_to_date(date_row.text)
+                logger.debug(event_datetime)
+                # event_datetimeがstart_dateからend_dateの範囲内であれば、URLを取得
+                if (
+                    start_date.timestamp()
+                    <= event_datetime.timestamp()
+                    <= end_date.timestamp()
+                ):
+                    result.append(element.get_attribute("href"))
             return result
         finally:
             driver.quit()
 
     def scrape_detail(self, url: str) -> TournamentSchedule:
-        """ 試合詳細を取得 """
+        """試合詳細を取得"""
         driver = _get_driver()
         try:
             driver.implicitly_wait(WAIT_TIME)
             driver.get(url)
-            elements = driver.find_elements(
-                By.CLASS_NAME, "Article_Table__item")
+            elements = driver.find_elements(By.CLASS_NAME, "Article_Table__item")
             active_table_items = ActiveTableItems.from_web_elements(elements)
             item_entity = active_table_items.to_entity_with_url(url)
             return item_entity.convert_to_tournament_schedule()
@@ -146,8 +165,15 @@ class TjpwScraper:
             driver.quit()
 
 
+def convert_to_date(date_str: str) -> datetime:
+    """
+    "2024Year3Month2Date(Saturday)"のような日付文字列をdatetimeに変換
+    """
+    return datetime.strptime(date_str, "%YYear%mMonth%dDate(%A)")
+
+
 def _make_date_list(start_date: datetime, end_date: datetime) -> list[datetime]:
-    """ start_dateからend_dateまでの日付のリストを作成 """
+    """start_dateからend_dateまでの日付のリストを作成"""
     date_list = []
     while start_date <= end_date:
         date_list.append(start_date)
@@ -156,10 +182,9 @@ def _make_date_list(start_date: datetime, end_date: datetime) -> list[datetime]:
 
 
 def _get_driver():
-    """ Seleniumのドライバーを取得 """
+    """Seleniumのドライバーを取得"""
     return webdriver.Remote(
-        command_executor=SELENIUM_URL,
-        options=webdriver.ChromeOptions()
+        command_executor=SELENIUM_URL, options=webdriver.ChromeOptions()
     )
 
 
@@ -171,4 +196,5 @@ if __name__ == "__main__":
     # end_date = datetime(2023, 10, 1)
     # print(scraping.scrape(start_date, end_date))
 
-    print(scraping.scrape_detail(url="https://www.ddtpro.com/schedules/20448"))
+    print(scraping.get_detail_urls(datetime(2024, 3, 8)))
+    # print(scraping.scrape_detail(url="https://www.ddtpro.com/schedules/20448"))
