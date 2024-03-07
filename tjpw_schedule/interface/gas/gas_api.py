@@ -30,6 +30,7 @@ class GasApi:
             "Content-Type": "application/json",
         }
 
+        logger.info(f"regist_tournament_schedule gas: {schedule.tournament_name.value}")
         response = requests.post(
             url=self.domain + "schedule", headers=headers, json=json_data
         )

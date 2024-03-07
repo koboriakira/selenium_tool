@@ -89,11 +89,11 @@ class TjpwScraper:
     def scrape(
         self, start_date: datetime, end_date: datetime
     ) -> list[TournamentSchedule]:
-        date_list = _make_date_list(start_date, end_date)
-        logger.debug(f"date_list: {date_list}")
+        month_date_list = _make_date_list(start_date, end_date)
+        logger.debug(f"date_list: {month_date_list}")
 
         result: list[TournamentSchedule] = []
-        for target_month in date_list:
+        for target_month in month_date_list:
             monthly_result = self._scrape_month(target_month, start_date, end_date)
             result.extend(monthly_result)
 
@@ -114,6 +114,7 @@ class TjpwScraper:
         result = []
         for detail_url in detail_urls:
             tournament_schedule = self.scrape_detail(detail_url)
+            logger.info(tournament_schedule)
             result.append(tournament_schedule)
         return result
 
@@ -127,7 +128,7 @@ class TjpwScraper:
             + "?"
             + "&".join([f"{key}={value}" for key, value in params.items()])
         )
-        logger.debug(url)
+        logger.info(url)
 
         driver = _get_driver()
         try:
@@ -147,12 +148,14 @@ class TjpwScraper:
                     <= end_date.timestamp()
                 ):
                     result.append(element.get_attribute("href"))
+            logger.info(result)
             return result
         finally:
             driver.quit()
 
     def scrape_detail(self, url: str) -> TournamentSchedule:
         """試合詳細を取得"""
+        logger.info(url)
         driver = _get_driver()
         try:
             driver.implicitly_wait(WAIT_TIME)

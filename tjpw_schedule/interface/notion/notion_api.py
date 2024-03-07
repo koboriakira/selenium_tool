@@ -22,7 +22,7 @@ class NotionApi:
             "promotion": "東京女子プロレス",
             "tags": [],
         }
-
+        logger.info(f"regist_tournament_schedule: {schedule.tournament_name.value}")
         return self._post(url=self.domain + "prowrestling", data=data)
 
     def _post(self, url: str, data: dict) -> dict:
