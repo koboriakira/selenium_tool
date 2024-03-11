@@ -1,5 +1,3 @@
-from tjpw_schedule.interface.notion.notion_api import NotionApi
-from tjpw_schedule.interface.gas.gas_api import GasApi
 from datetime import datetime, timezone, timedelta
 from tjpw_schedule.custom_logging import get_logger
 from tjpw_schedule.usecase.scrape_tjpw import ScrapeTjpw

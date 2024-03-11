@@ -61,21 +61,21 @@ class ScrapeTjpw:
         detail_urls = self.scraper.get_detail_urls(
             target_year=target_year, target_month=target_month
         )
-        # 月のすべてを取得しているので、検索範囲内に絞る
+        # 検索範囲内かつ必要なページに絞る
         detail_urls = [
             detail_url
             for detail_url in detail_urls
             if detail_url.is_in_date_range(start_date, end_date)
+            and detail_url.is_schedule()
         ]
         # それぞれの詳細をスクレイピング
-        result: list[TournamentSchedule] = []
-        for detail_url in detail_urls:
-            active_table_items = self.scraper.scrape_detail(detail_url.value)
-            print(active_table_items.items)
-            # それぞれの詳細をTournamentScheduleに変換
-            item_entity = active_table_items.to_entity_with_url()
-            result.append(item_entity.convert_to_tournament_schedule())
-        return result
+        item_entities = [
+            self.scraper.scrape_detail(detail_url.value) for detail_url in detail_urls
+        ]
+        return [
+            item_entity.convert_to_tournament_schedule()
+            for item_entity in item_entities
+        ]
 
 
 def _make_date_list(start_date: datetime, end_date: datetime) -> list[datetime]:

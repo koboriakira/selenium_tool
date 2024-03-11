@@ -7,7 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from tjpw_schedule.domain.schedule import TournamentSchedule
-from tjpw_schedule.interface.selenium.Item_entity import ItemEntity
+from tjpw_schedule.infrastructure.Item_entity import ItemEntity
 from dataclasses import dataclass
 from enum import Enum
 
@@ -87,6 +87,10 @@ class DetailUrl:
         """start_dateからend_dateの範囲内にあるか"""
         return start_date.timestamp() <= self.date.timestamp() <= end_date.timestamp()
 
+    def is_schedule(self) -> bool:
+        """試合情報のURLかどうか。たとえば選手プロフィールのURLなどは除外するため。"""
+        return self.value.startswith("https://www.ddtpro.com/schedules")
+
 
 class Scraper(metaclass=ABCMeta):
     DDTPRO_SCHEDULES = "https://www.ddtpro.com/schedules"
@@ -101,5 +105,5 @@ class Scraper(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def scrape_detail(self, url: str) -> ActiveTableItems:
+    def scrape_detail(self, url: str) -> ItemEntity:
         """試合詳細を取得"""
