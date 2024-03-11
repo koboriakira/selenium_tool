@@ -26,37 +26,24 @@ class ScrapeTjpw:
             # ScheduleMockApi()
         ]
 
-    def execute(
-        self, start_date: datetime, end_date: datetime
-    ) -> list[TournamentSchedule]:
-        month_date_list = _make_date_list(start_date, end_date)
-        month_list_for_debug = [
-            month_date.strftime("%Y%m") for month_date in month_date_list
-        ]
-        print(f"date_list: {month_list_for_debug}")
-
-        result: list[TournamentSchedule] = []
-        for target_month in month_date_list:
-            tournament_schedules = self.scrape_month(
+    def execute(self, start_date: datetime, end_date: datetime) -> None:
+        print(f"start_date: {start_date.isoformat()}, end_date: {end_date.isoformat()}")
+        for target_month in _make_date_list(start_date, end_date):
+            _ = self._scrape_month(
                 target_year=target_month.year,
                 target_month=target_month.month,
                 start_date=start_date,
                 end_date=end_date,
             )
-            result.extend(tournament_schedules)
-            for tournament_schedule in tournament_schedules:
-                for schedule_external_api in self.schedule_external_api_list:
-                    schedule_external_api.save(tournament_schedule)
 
-        return result
-
-    def scrape_month(
+    def _scrape_month(
         self,
         target_year: int,
         target_month: int,
         start_date: datetime,
         end_date: datetime,
     ) -> list[TournamentSchedule]:
+        print(f"target_year: {target_year}, target_month: {target_month}")
         # その月にふくまれる、試合詳細のURL一覧を取得
         detail_urls = self.scraper.get_detail_urls(
             target_year=target_year, target_month=target_month
@@ -72,10 +59,15 @@ class ScrapeTjpw:
         item_entities = [
             self.scraper.scrape_detail(detail_url.value) for detail_url in detail_urls
         ]
-        return [
+        tournament_schedules = [
             item_entity.convert_to_tournament_schedule()
             for item_entity in item_entities
         ]
+        # 登録
+        for tournament_schedule in tournament_schedules:
+            for schedule_external_api in self.schedule_external_api_list:
+                schedule_external_api.save(tournament_schedule)
+        return tournament_schedules
 
 
 def _make_date_list(start_date: datetime, end_date: datetime) -> list[datetime]:
@@ -84,4 +76,5 @@ def _make_date_list(start_date: datetime, end_date: datetime) -> list[datetime]:
     while start_date <= end_date:
         date_list.append(start_date)
         start_date += relativedelta(months=1)
+    print(f"make_date_list: {date_list}")
     return date_list

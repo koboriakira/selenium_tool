@@ -11,9 +11,9 @@ def main():
     scrape_tjpw_use_case = ScrapeTjpw()
 
     start_date = datetime.now(JST)
-    end_date = datetime.now(JST) + timedelta(days=7)
+    end_date = start_date + timedelta(days=7)
 
-    scrape_tjpw_use_case.execute(start_date, end_date)
+    _ = scrape_tjpw_use_case.execute(start_date, end_date)
     logger.info("End main function")
 
 
