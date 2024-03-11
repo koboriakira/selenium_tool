@@ -48,11 +48,13 @@ class SeleniumScraper(Scraper):
             driver.get(url)
             elements = driver.find_elements(By.CLASS_NAME, "Itemrow__content")
             for element in elements:
+                href = element.get_attribute("href")
+                if "https://www.ddtpro.com/schedules" not in href:
+                    continue
                 date_row = element.find_element(By.CLASS_NAME, "Itemrow__date")
                 logger.debug(date_row.text)
                 event_datetime = _convert_to_date(date_row.text)
                 logger.debug(event_datetime)
-                href = element.get_attribute("href")
                 result.append(DetailUrl(value=href, date=event_datetime))
             logger.info(result)
             return result
