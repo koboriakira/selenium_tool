@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
-from datetime import date, time, datetime
+from datetime import date, time, datetime, timedelta
 import re
 
 
@@ -16,7 +16,7 @@ class Date:
 
     @property
     def isoformatted_date(self) -> str:
-        """ yyyy-mm-dd形式の日付 """
+        """yyyy-mm-dd形式の日付"""
         return self.convert_date().isoformat()
 
     def convert_date(self) -> date:
@@ -24,7 +24,9 @@ class Date:
         match = re.search(r"\d+年\d+月\d+日", self.value)
         if match:
             # 2023年10月9日のような文字列を2023-10-9のような文字列に変換
-            date_str = match.group().replace("年", "-").replace("月", "-").replace("日", "")
+            date_str = (
+                match.group().replace("年", "-").replace("月", "-").replace("日", "")
+            )
             # isoformatな文字列に変換。0埋めできてない箇所を埋める。例: 2023-10-9 -> 2023-10-09
             date_str = "-".join([f"{int(d):02d}" for d in date_str.split("-")])
             return date.fromisoformat(date_str)
@@ -33,13 +35,12 @@ class Date:
 
     @property
     def open_time(self) -> time:
-        """ 開場時間を取得 """
+        """開場時間を取得"""
         match = re.search(r"開場\d+:\d+", self.value)
         if match:
             try:
                 time_str = match.group().replace("開場", "")
-                print(time_str)
-                return time.fromisoformat(time_str+":00")
+                return time.fromisoformat(time_str + ":00")
             except:
                 raise ValueError("開場時間の文字列から開場時間を取得できませんでした")
         else:
@@ -71,16 +72,23 @@ class TournamentSchedule:
     note: Optional[Note] = None
 
     def overview(self) -> str:
-        """ 席種、備考を除いた試合の概要を取得 """
+        """席種、備考を除いた試合の概要を取得"""
         return f"{self.tournament_name.value}\n{self.date.value}\n{self.venue.value}"
 
     def convert_to_detail(self) -> str:
-        """ カレンダー登録用の詳細文を作成 """
+        """カレンダー登録用の詳細文を作成"""
         # URLと会場、座席と備考欄を合成する
         note_str = self.note.value if self.note else ""
-        return f"{self.url}\n\n{self.venue.value}\n\n{self.seat_type.value}\n\n{note_str}"
+        return (
+            f"{self.url}\n\n{self.venue.value}\n\n{self.seat_type.value}\n\n{note_str}"
+        )
 
     @property
     def open_datetime(self) -> datetime:
-        """ 開場時間を含めた日時を取得 """
+        """開場時間を含めた日時を取得"""
         return datetime.combine(self.date.convert_date(), self.date.open_time)
+
+    @property
+    def end_datetime(self) -> datetime:
+        """終了時刻を取得。とりあえず開場時間から4時間後とする。"""
+        return self.open_datetime + timedelta(hours=4)

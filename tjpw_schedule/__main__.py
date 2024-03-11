@@ -1,8 +1,8 @@
-from tjpw_schedule.interface.selenium.tjpw_scraper import TjpwScraper
 from tjpw_schedule.interface.notion.notion_api import NotionApi
 from tjpw_schedule.interface.gas.gas_api import GasApi
 from datetime import datetime, timezone, timedelta
 from tjpw_schedule.custom_logging import get_logger
+from tjpw_schedule.usecase.scrape_tjpw import ScrapeTjpw
 
 JST = timezone(timedelta(hours=+9), "JST")
 logger = get_logger(__name__)
@@ -10,17 +10,12 @@ logger = get_logger(__name__)
 
 def main():
     logger.info("Start main function")
-    scraper = TjpwScraper()
-    notion_api = NotionApi()
-    gas_api = GasApi()
+    scrape_tjpw_use_case = ScrapeTjpw()
 
     start_date = datetime.now(JST)
     end_date = datetime.now(JST) + timedelta(days=7)
 
-    tournament_schedules = scraper.scrape(start_date, end_date)
-    for tournament_schedule in tournament_schedules:
-        notion_api.regist_tournament_schedule(tournament_schedule)
-        gas_api.regist_tournament_schedule(tournament_schedule)
+    scrape_tjpw_use_case.execute(start_date, end_date)
     logger.info("End main function")
 
 
