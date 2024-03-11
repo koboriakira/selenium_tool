@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import requests
 import os
+import json
 from tjpw_schedule.domain.schedule import TournamentSchedule
 from tjpw_schedule.custom_logging import get_logger
 
@@ -12,8 +13,8 @@ class ScheduleExternalApi(metaclass=ABCMeta):
     def save(self, schedule: TournamentSchedule) -> None:
         pass
 
-    def _post(
-        self, url: str, headers: dict | None = None, json: dict | None = None
+    def post(
+        self, url: str, headers: dict | None = None, data: dict | None = None
     ) -> list | dict:
         original_header = {
             "Accept": "application/json",
@@ -23,8 +24,10 @@ class ScheduleExternalApi(metaclass=ABCMeta):
             original_header.update(headers)
         logger.info(f"ScheduleExternalApi#_post: {url}")
         logger.info(f"ScheduleExternalApi#_post: {original_header}")
-        logger.info(f"ScheduleExternalApi#_post: {json}")
-        response = requests.post(url=url, headers=original_header, json=json)
+        logger.info(f"ScheduleExternalApi#_post: {data}")
+        response = requests.post(url=url, headers=original_header, json=data)
+        logger.info(response)
+        logger.info(response.text)
         response_json = response.json()
         if isinstance(response_json, str):
             response_json = json.loads(response_json)
@@ -47,7 +50,7 @@ class ScheduleGoogleCalendarApi(ScheduleExternalApi):
         }
 
         logger.info(f"ScheduleGoogleCalendarApi#save: {schedule.tournament_name.value}")
-        result = self._post(url=self.domain + "schedule", json=json_data)
+        result = self.post(url=self.domain + "schedule", data=json_data)
         print(result)
 
 

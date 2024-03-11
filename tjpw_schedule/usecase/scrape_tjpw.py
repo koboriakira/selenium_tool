@@ -2,6 +2,7 @@ from tjpw_schedule.domain.scraper import Scraper, ActiveTableItems
 from tjpw_schedule.domain.schedule_external_api import (
     ScheduleExternalApi,
     ScheduleGoogleCalendarApi,
+    ScheduleNotionApi,
     ScheduleMockApi,
 )
 from datetime import datetime
@@ -20,8 +21,9 @@ class ScrapeTjpw:
 
         self.scraper = scraper or SeleniumScraper()
         self.schedule_external_api_list = schedule_external_api_list or [
-            # ScheduleGoogleCalendarApi()
-            ScheduleMockApi()
+            ScheduleGoogleCalendarApi(),
+            ScheduleNotionApi(),
+            # ScheduleMockApi()
         ]
 
     def execute(
