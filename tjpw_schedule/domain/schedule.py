@@ -35,16 +35,7 @@ class Date:
 
     @property
     def open_time(self) -> time:
-        """開場時間を取得"""
-        # 開場時間を特定する
-        match = re.search(r"開場\d+:\d+", self.value)
-        if match:
-            try:
-                time_str = match.group().replace("開場", "")
-                return time.fromisoformat(time_str + ":00")
-            except:
-                raise ValueError("開場時間の文字列から開場時間を取得できませんでした")
-
+        """開始時間を取得"""
         # 開始時間を探してみる
         match = re.search(r"開始\d+:\d+", self.value)
         if match:
@@ -53,6 +44,15 @@ class Date:
                 return time.fromisoformat(time_str + ":00")
             except:
                 raise ValueError("開始時間の文字列から開始時間を取得できませんでした")
+
+        # 開場時間を探してみる
+        match = re.search(r"開場\d+:\d+", self.value)
+        if match:
+            try:
+                time_str = match.group().replace("開場", "")
+                return time.fromisoformat(time_str + ":00")
+            except:
+                raise ValueError("開場時間の文字列から開場時間を取得できませんでした")
 
         raise ValueError(f"開場時間の文字列が見つかりませんでした: {self.value}")
 
