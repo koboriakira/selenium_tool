@@ -18,7 +18,14 @@ class ScrapeRange:
     def create_default_instance(is_dev: bool = False):
         JST = timezone(timedelta(hours=+9), "JST")
         start_date = datetime.now(JST)
-        end_date = start_date + timedelta(days=(7 if not is_dev else 7))
+        end_date = start_date + timedelta(days=(90 if not is_dev else 7))
+        return ScrapeRange(start_date=start_date, end_date=end_date)
+
+    @staticmethod
+    def from_yyyymmdd(start_date: str, end_date: str):
+        JST = timezone(timedelta(hours=+9), "JST")
+        start_date = datetime.strptime(start_date, "%Y%m%d").replace(tzinfo=JST)
+        end_date = datetime.strptime(end_date, "%Y%m%d").replace(tzinfo=JST)
         return ScrapeRange(start_date=start_date, end_date=end_date)
 
     def to_target_yyyymm_list(self) -> list[str]:

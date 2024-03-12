@@ -54,7 +54,6 @@ class ScrapeTjpw:
             for tournament_schedule in tournament_schedules:
                 for schedule_external_api in self.schedule_external_api_list:
                     schedule_external_api.save(tournament_schedule)
-            return tournament_schedules
 
 
 def _make_date_list(start_date: datetime, end_date: datetime) -> list[datetime]:
