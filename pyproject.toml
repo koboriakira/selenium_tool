@@ -1,0 +1,11 @@
+[tool.ruff]
+target-version = "py311" # Pythonのバージョンを指定
+fix = true               # 自動修正を有効にする
+indent-width = 4         # インデントの幅を指定
+tab-size = 4             # タブの幅を指定
+src = ["tjpw_schedule"]
+
+line-length = 120
+
+[tool.ruff.pydocstyle]
+convention = "google" # docstringの形式を指定
