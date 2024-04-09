@@ -1,12 +1,14 @@
-import requests
 import os
 from datetime import datetime
+
+import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from tjpw_schedule.infrastructure.Item_entity import ItemEntity
-from tjpw_schedule.domain.scraper import Scraper, DetailUrl, ActiveTableItems
+
 from tjpw_schedule.custom_logging import get_logger
+from tjpw_schedule.domain.scraper import ActiveTableItems, DetailUrl, Scraper
+from tjpw_schedule.infrastructure.Item_entity import ItemEntity
 
 logger = get_logger(__name__)
 SELENIUM_URL = os.environ.get("SELENIUM_URL", "http://localhost:4444")
@@ -14,7 +16,6 @@ WAIT_TIME = 5
 
 
 class SeleniumScraper(Scraper):
-
     def __init__(self, selenium_domain: str | None = None):
         # Seleniumが起動しているか確認
         selenium_url = (selenium_domain or SELENIUM_URL) + "/wd/hub/status"
@@ -54,11 +55,7 @@ class SeleniumScraper(Scraper):
     def _generate_get_detail_api_url(self, target_year: int, target_month: int) -> str:
         """URLを生成"""
         params = {"teamId": "tjpw", "yyyymm": f"{target_year}{target_month:02}"}
-        return (
-            self.DDTPRO_SCHEDULES
-            + "?"
-            + "&".join([f"{key}={value}" for key, value in params.items()])
-        )
+        return self.DDTPRO_SCHEDULES + "?" + "&".join([f"{key}={value}" for key, value in params.items()])
 
 
 def _convert_to_date(date_str: str) -> datetime:
@@ -78,7 +75,8 @@ def _extract_detail_url_info(element: WebElement) -> DetailUrl:
 def _get_driver():
     """Seleniumのドライバーを取得"""
     driver = webdriver.Remote(
-        command_executor=SELENIUM_URL, options=webdriver.ChromeOptions()
+        command_executor=SELENIUM_URL,
+        options=webdriver.ChromeOptions(),
     )
     driver.implicitly_wait(WAIT_TIME)
     return driver

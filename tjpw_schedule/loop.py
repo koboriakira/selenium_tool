@@ -2,6 +2,5 @@
 # このプロセスは、systemdのサービスとして起動される
 import time
 
-
 while True:
     time.sleep(60)

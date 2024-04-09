@@ -1,9 +1,10 @@
-from abc import ABCMeta, abstractmethod
-import requests
-import os
 import json
-from tjpw_schedule.domain.schedule import TournamentSchedule
+import os
+from abc import ABCMeta, abstractmethod
+
+import requests
 from tjpw_schedule.custom_logging import get_logger
+from tjpw_schedule.domain.schedule import TournamentSchedule
 
 logger = get_logger(__name__)
 
@@ -14,7 +15,10 @@ class ScheduleExternalApi(metaclass=ABCMeta):
         pass
 
     def post(
-        self, url: str, headers: dict | None = None, data: dict | None = None
+        self,
+        url: str,
+        headers: dict | None = None,
+        data: dict | None = None,
     ) -> list | dict:
         original_header = {
             "Accept": "application/json",
@@ -35,7 +39,6 @@ class ScheduleExternalApi(metaclass=ABCMeta):
 
 
 class ScheduleGoogleCalendarApi(ScheduleExternalApi):
-
     def __init__(self) -> None:
         self.domain = os.environ["LAMBDA_GOOGLE_CALENDAR_API_DOMAIN"]
 
@@ -55,7 +58,6 @@ class ScheduleGoogleCalendarApi(ScheduleExternalApi):
 
 
 class ScheduleNotionApi(ScheduleExternalApi):
-
     def __init__(self) -> None:
         self.domain = os.environ["LAMBDA_NOTION_API_DOMAIN"]
         self.notion_secret = os.environ["NOTION_SECRET"]
@@ -79,7 +81,6 @@ class ScheduleNotionApi(ScheduleExternalApi):
 
 
 class ScheduleMockApi(ScheduleExternalApi):
-
     def save(self, schedule: TournamentSchedule) -> None:
         print("MockApi")
         print(schedule)

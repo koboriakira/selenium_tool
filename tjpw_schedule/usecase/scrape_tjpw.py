@@ -1,18 +1,11 @@
-from tjpw_schedule.domain.scraper import DetailUrl, Scraper, ActiveTableItems
 from tjpw_schedule.domain.schedule_external_api import (
     ScheduleExternalApi,
-    ScheduleGoogleCalendarApi,
-    ScheduleNotionApi,
-    ScheduleMockApi,
 )
-from datetime import datetime
-from tjpw_schedule.domain.schedule import TournamentSchedule
-from dateutil.relativedelta import relativedelta
+from tjpw_schedule.domain.scraper import DetailUrl, Scraper
 from tjpw_schedule.usecase.request.scrape_range import ScrapeRange
 
 
 class ScrapeTjpw:
-
     def __init__(
         self,
         scraper: Scraper,
@@ -27,14 +20,14 @@ class ScrapeTjpw:
 
             # その月にふくまれる、試合詳細のURL一覧を取得
             detail_urls = self.scraper.get_detail_urls(
-                target_year=int(target_yyyymm[:4]), target_month=int(target_yyyymm[4:])
+                target_year=int(target_yyyymm[:4]),
+                target_month=int(target_yyyymm[4:]),
             )
             # 検索範囲内かつ必要なページに絞る
             detail_urls = [
                 detail_url
                 for detail_url in detail_urls
-                if detail_url.is_in_date_range(range.start_date, range.end_date)
-                and detail_url.is_schedule()
+                if detail_url.is_in_date_range(range.start_date, range.end_date) and detail_url.is_schedule()
             ]
 
             _ = [self._execute_detail(detail_url) for detail_url in detail_urls]

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
+
 from dateutil.relativedelta import relativedelta
 
 

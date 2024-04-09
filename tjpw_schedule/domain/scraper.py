@@ -1,15 +1,13 @@
-from abc import ABCMeta, abstractmethod
-import requests
 import os
-from logging import getLogger
+from abc import ABCMeta, abstractmethod
+from dataclasses import dataclass
 from datetime import datetime
-from selenium import webdriver
+from enum import Enum
+from logging import getLogger
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from tjpw_schedule.domain.schedule import TournamentSchedule
 from tjpw_schedule.infrastructure.Item_entity import ItemEntity
-from dataclasses import dataclass
-from enum import Enum
 
 logger = getLogger(__name__)
 
@@ -32,7 +30,7 @@ class ItemType(Enum):
     NOTE = "備考"
 
     def key(self):
-        match (self):
+        match self:
             case ItemType.TOURNAMENT_NAME:
                 return "tournament_name"
             case ItemType.DATE:
@@ -102,7 +100,6 @@ class Scraper(metaclass=ABCMeta):
         target_month: int,
     ) -> list[DetailUrl]:
         """試合詳細のURLを取得"""
-        pass
 
     @abstractmethod
     def scrape_detail(self, url: str) -> ItemEntity:
