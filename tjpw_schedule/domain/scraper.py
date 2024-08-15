@@ -7,11 +7,12 @@ from logging import getLogger
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
+
 from tjpw_schedule.infrastructure.Item_entity import ItemEntity
 
 logger = getLogger(__name__)
 
-SELENIUM_URL = os.environ.get("SELENIUM_URL", "http://localhost:4444")
+SELENIUM_DOMAIN = os.environ.get("SELENIUM_DOMAIN", "http://localhost:4444")
 WAIT_TIME = 5
 
 

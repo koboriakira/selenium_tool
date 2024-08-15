@@ -1,8 +1,9 @@
 from tjpw_schedule.domain.schedule_external_api import (
     ScheduleExternalApi,
 )
-from tjpw_schedule.domain.scraper import DetailUrl, Scraper
+from tjpw_schedule.domain.scraper import Scraper
 from tjpw_schedule.usecase.request.scrape_range import ScrapeRange
+from tjpw_schedule.usecase.service.scrape_show import ScrapeShow
 
 
 class ScrapeTjpw:
@@ -12,7 +13,7 @@ class ScrapeTjpw:
         schedule_external_api_list: list[ScheduleExternalApi],
     ) -> None:
         self.scraper = scraper
-        self.schedule_external_api_list = schedule_external_api_list
+        self._scrape_show = ScrapeShow(scraper, schedule_external_api_list)
 
     def execute(self, range: ScrapeRange) -> None:
         for target_yyyymm in range.to_target_yyyymm_list():
@@ -27,17 +28,8 @@ class ScrapeTjpw:
             detail_urls = [
                 detail_url
                 for detail_url in detail_urls
-                if detail_url.is_in_date_range(range.start_date, range.end_date) and detail_url.is_schedule()
+                if detail_url.is_in_date_range(range.start_date, range.end_date)
+                and detail_url.is_schedule()
             ]
 
-            _ = [self._execute_detail(detail_url) for detail_url in detail_urls]
-
-    def _execute_detail(self, detail_url: DetailUrl) -> None:
-        """詳細をスクレイピングして登録する"""
-        # スクレイピング
-        item_entity = self.scraper.scrape_detail(detail_url.value)
-        tournament_schedule = item_entity.convert_to_tournament_schedule()
-
-        # 注入したAPIの分、登録処理を行う
-        for schedule_external_api in self.schedule_external_api_list:
-            schedule_external_api.save(tournament_schedule)
+            _ = [self._scrape_show.execute(detail_url) for detail_url in detail_urls]
