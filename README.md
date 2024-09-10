@@ -47,3 +47,37 @@ docker-compose up -d
 # start_date, end_dateをイジって実行する
 docker-compose exec app python -m tjpw_schedule
 ```
+
+### ローカルで実行する
+
+```bash
+# .envについて SELENIUM_DOMAIN=http://localhost:4444 にしたうえで実行
+python -m tjpw_schedule
+```
+
+## CLIに組み込む
+
+```shell
+# 東京女子のスケジュール更新
+function tjpw-update-schedule() {
+  cd ~/git/tjpw_schedule
+  docker-compose down
+  docker-compose up -d chrome
+  sleep 60
+  echo "[TJPW-UPDATE-SCHEDULE] 実行します"
+  docker-compose up app
+
+  # 上の処理が失敗した場合はここで終了
+  if [ $? -ne 0 ]; then
+    slack-post "[TJPW-UPDATE-SCHEDULE] Failed to update TJPW schedule."
+    docker-compose down
+    cd $OLDPWD
+    return 1
+  fi
+
+  docker-compose down
+  echo "[TJPW-UPDATE-SCHEDULE] 終了しました"
+  cd $OLDPWD
+}
+
+```
