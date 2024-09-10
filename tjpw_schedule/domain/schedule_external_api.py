@@ -3,6 +3,7 @@ import os
 from abc import ABCMeta, abstractmethod
 
 import requests
+
 from tjpw_schedule.custom_logging import get_logger
 from tjpw_schedule.domain.schedule import TournamentSchedule
 
@@ -26,12 +27,12 @@ class ScheduleExternalApi(metaclass=ABCMeta):
         }
         if headers:
             original_header.update(headers)
-        logger.info(f"ScheduleExternalApi#_post: {url}")
-        logger.info(f"ScheduleExternalApi#_post: {original_header}")
-        logger.info(f"ScheduleExternalApi#_post: {data}")
+        logger.debug(f"ScheduleExternalApi#_post: {url}")
+        logger.debug(f"ScheduleExternalApi#_post: {original_header}")
+        logger.debug(f"ScheduleExternalApi#_post: {data}")
         response = requests.post(url=url, headers=original_header, json=data)
-        logger.info(response)
-        logger.info(response.text)
+        logger.debug(response)
+        logger.debug(response.text)
         response_json = response.json()
         if isinstance(response_json, str):
             response_json = json.loads(response_json)
@@ -52,7 +53,13 @@ class ScheduleGoogleCalendarApi(ScheduleExternalApi):
             "detail": schedule.convert_to_detail(),
         }
 
-        logger.info(f"ScheduleGoogleCalendarApi#save: {schedule.tournament_name.value}")
+        logger.debug(
+            f"ScheduleGoogleCalendarApi#save: {schedule.tournament_name.value}"
+        )
+        logger.info(
+            f"Googleカレンダーに登録します。大会名: {schedule.tournament_name.value}, \
+                開催日: {schedule.open_datetime.isoformat()}",
+        )
         result = self.post(url=self.domain + "schedule", data=json_data)
         print(result)
 
@@ -74,7 +81,7 @@ class ScheduleNotionApi(ScheduleExternalApi):
         headers = {
             "access-token": self.notion_secret,
         }
-        logger.info(f"ScheduleNotionApi#save: {schedule.tournament_name.value}")
+        logger.debug(f"ScheduleNotionApi#save: {schedule.tournament_name.value}")
         url = self.domain + "prowrestling"
         result = self.post(url=url, headers=headers, data=data)
         print(result)

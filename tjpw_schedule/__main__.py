@@ -11,13 +11,13 @@ logger = get_logger(__name__)
 
 
 def main(range: ScrapeRange) -> None:
-    logger.info("Start main function")
+    logger.debug("Start main function")
     scrape_tjpw_usecase = ScrapeTjpw(
         scraper=SeleniumScraper(),
         schedule_external_api_list=[ScheduleGoogleCalendarApi()],
     )
     scrape_tjpw_usecase.execute(range)
-    logger.info("End main function")
+    logger.debug("End main function")
 
 
 if __name__ == "__main__":

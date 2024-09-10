@@ -32,7 +32,7 @@ class SeleniumScraper(Scraper):
         target_month: int,
     ) -> list[DetailUrl]:
         url = self._generate_get_detail_api_url(target_year, target_month)
-        logger.info(url)
+        logger.debug(url)
         driver = _get_driver(self._selenium_domain)
         try:
             driver.get(url)
@@ -43,7 +43,7 @@ class SeleniumScraper(Scraper):
 
     def scrape_detail(self, url: str) -> ItemEntity:
         """試合詳細を取得"""
-        logger.info(url)
+        logger.debug(url)
         driver = _get_driver(self._selenium_domain)
         try:
             driver.get(url)
