@@ -1,21 +1,27 @@
-from tjpw_schedule.interface.selenium.tjpw_scraper import TjpwScraper
-from tjpw_schedule.interface.notion.notion_api import NotionApi
-from tjpw_schedule.interface.gas.gas_api import GasApi
-from datetime import datetime
+from datetime import timedelta, timezone
+
+from tjpw_schedule.custom_logging import get_logger
+from tjpw_schedule.domain.schedule_external_api import ScheduleGoogleCalendarApi
+from tjpw_schedule.infrastructure.selenium_scraper import SeleniumScraper
+from tjpw_schedule.usecase.request.scrape_range import ScrapeRange
+from tjpw_schedule.usecase.scrape_tjpw import ScrapeTjpw
+
+JST = timezone(timedelta(hours=+9), "JST")
+logger = get_logger(__name__)
 
 
-def main():
-    scraper = TjpwScraper()
-    notion_api = NotionApi()
-    gas_api = GasApi()
-
-    tournament_schedules = scraper.scrape(start_date=datetime(2023, 11, 1),
-                                          end_date=datetime(2023, 11, 1))
-    for tournament_schedule in tournament_schedules:
-        notion_api.regist_tournament_schedule(tournament_schedule)
-        gas_api.regist_tournament_schedule(tournament_schedule)
+def main(range: ScrapeRange) -> None:
+    logger.debug("Start main function")
+    scrape_tjpw_usecase = ScrapeTjpw(
+        scraper=SeleniumScraper(),
+        schedule_external_api_list=[ScheduleGoogleCalendarApi()],
+    )
+    scrape_tjpw_usecase.execute(range)
+    logger.debug("End main function")
 
 
 if __name__ == "__main__":
     # python -m tjpw_schedule
-    main()
+    range = ScrapeRange.create_default_instance()
+    # range = ScrapeRange.from_yyyymmdd("20240322", "20240322")
+    main(range)

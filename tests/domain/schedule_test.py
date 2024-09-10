@@ -1,5 +1,5 @@
 from unittest import TestCase
-from tjpw_schedule.domain.schedule import TournamentSchedule, TournamentName, Date, Venue, SeatType, Note
+from tjpw_schedule.domain.schedule import Date
 
 
 class DateTest(TestCase):

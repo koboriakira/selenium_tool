@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from typing import Optional
-from tjpw_schedule.domain.schedule import TournamentSchedule, TournamentName, Date, Venue, SeatType, Note
+
+from tjpw_schedule.domain.schedule import Date, Note, SeatType, TournamentName, TournamentSchedule, Venue
 
 
 @dataclass(frozen=True)
@@ -9,8 +9,8 @@ class ItemEntity:
     tournament_name: str
     date: str
     venue: str
-    seat_type: Optional[str] = None
-    note: Optional[str] = None
+    seat_type: str | None = None
+    note: str | None = None
 
     @staticmethod
     def from_dict(params: dict[str, str]):
@@ -20,16 +20,16 @@ class ItemEntity:
             date=params.get("date"),
             venue=params.get("venue"),
             seat_type=params.get("seat_type"),
-            note=params.get("note")
+            note=params.get("note"),
         )
 
     def convert_to_tournament_schedule(self) -> TournamentSchedule:
-        """ TournamentScheduleに変換 """
+        """TournamentScheduleに変換"""
         return TournamentSchedule(
             url=self.url,
             tournament_name=TournamentName(self.tournament_name),
             date=Date(self.date),
             venue=Venue(self.venue),
             seat_type=SeatType(self.seat_type) if self.seat_type else None,
-            note=Note(self.note) if self.note else None
+            note=Note(self.note) if self.note else None,
         )

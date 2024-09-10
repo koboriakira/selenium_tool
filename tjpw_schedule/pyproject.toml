@@ -1,0 +1,19 @@
+[tool.ruff]
+extend = "../pyproject.toml"
+
+src = ["."]
+ignore = [
+  "D",      # ドキュメント関連の警告を無視
+  "ANN101", # 型ヒントがない場合の警告を無視
+  "TD",     # ドキュメントの型ヒントがない場合の警告を無視
+  "FIX",    # FIXMEコメントがある場合の警告を無視
+  "T201",   # print文がある場合の警告を無視
+  "TRY",    # try-except文がある場合の警告を無視
+  "N802",   # クラス名がキャメルケースでない場合の警告を無視
+  "PD",     # Pandas関連の警告を無視
+]
+
+select = ["ALL"] # ignore以外のすべてのルールを適用する
+
+[tool.ruff.lint.mccabe] # 複雑度の設定
+max-complexity = 5 # 複雑度が5を超えると`C901`の警告を出す
