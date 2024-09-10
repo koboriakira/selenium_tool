@@ -7,5 +7,9 @@
   },
   "python.terminal.activateEnvInCurrentTerminal": true,
   "python.testing.cwd": "test",
-  "python.testing.pytestEnabled": true
+  "python.testing.pytestEnabled": true,
+  "python.analysis.extraPaths": [
+    "./tjpw_schedule"
+  ],
+  "python.analysis.typeCheckingMode": "basic" // 新しいプロジェクトならstrictにしたい
 }
