@@ -8,8 +8,20 @@
   "python.terminal.activateEnvInCurrentTerminal": true,
   "python.testing.cwd": "test",
   "python.testing.pytestEnabled": true,
-  "python.analysis.extraPaths": [
-    "./tjpw_schedule"
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.aiCodeActions": {
+    "implementAbstractClasses": true,
+    "reportMissingImports": true,
+    "reportMissingTypeStubs": true,
+    "useTypeStubForTypeshed": true
+  },
+  "python.analysis.extraPaths": ["./tjpw_schedule"],
+  "python.analysis.fixAll": [
+    "source.unusedImports",
+    "source.convertImportFormat"
   ],
-  "python.analysis.typeCheckingMode": "basic" // 新しいプロジェクトならstrictにしたい
+  "python.analysis.importFormat": "absolute",
+  "python.analysis.typeCheckingMode": "basic",
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 500 // 新しいプロジェクトならstrictにしたい
 }

@@ -45,7 +45,7 @@ Dockerコンテナ上で動作。
 docker-compose up -d
 
 # start_date, end_dateをイジって実行する
-docker-compose exec app python -m tjpw_schedule
+docker-compose exec app python -m tjpw_schedule.infrastructure.selenium_scraper
 ```
 
 ### ローカルで実行する
