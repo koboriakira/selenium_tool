@@ -3,7 +3,7 @@ from datetime import datetime
 from enum import Enum
 from time import sleep
 
-from itskenpo.selenium_factory import SeleniumFactory
+from common.selenium_factory import SeleniumFactory
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
@@ -155,51 +155,17 @@ class Itskenpo:
             # 鮨一新の空きカレンダーページにアクセス
             self._access(DEFAULT_URL)
 
+            # 12週分の空きを取得
             vacancies = []
-            for i in range(0, 8):
+            for _ in range(0, 8):
                 for reservation in RESERVATION_TYPE:
                     print(reservation.label())
                     self.click_tab(reservation.tab_id())
                     week_vacancies = self.proc_table(reservation.table_id())
                     vacancies.extend(week_vacancies)
 
+            # 
             print(vacancies)
-
-            # for i in range(2037, 2042):
-            #     self.click_tab(f"link-{i}")
-            #     self.proc_table(f"tcb-{i}")
-
-            self.next()
-
-            for i in range(2037, 2042):
-                self.click_tab(f"link-{i}")
-                self.proc_table(f"tcb-{i}")
-
-            # page_title_element = WebDriverWait(driver, 10).until(
-            #     EC.presence_of_element_located((By.ID, "page-title"))
-            # )
-            # print(page_title_element.text)
-            # tbody_element = WebDriverWait(driver, 10).until(
-            #     EC.presence_of_element_located((By.ID, "tcb-2037"))
-            # )
-            # td_elements = tbody_element.find_elements(By.TAG_NAME, "td")
-            # for td_element in td_elements:
-            #     print(td_element.text)
-            # # 次のタブに移動
-            # element = WebDriverWait(driver, 10).until(
-            #     EC.presence_of_element_located((By.ID, "link-2038"))
-            # )
-            # element.click()
-            # page_title_element = WebDriverWait(driver, 10).until(
-            #     EC.presence_of_element_located((By.ID, "page-title"))
-            # )
-            # print(page_title_element.text)
-            # tbody_element = WebDriverWait(driver, 10).until(
-            #     EC.presence_of_element_located((By.ID, "tcb-2038"))
-            # )
-            # td_elements = tbody_element.find_elements(By.TAG_NAME, "td")
-            # for td_element in td_elements:
-            #     print(td_element.text)
         finally:
             self.quit()
 
