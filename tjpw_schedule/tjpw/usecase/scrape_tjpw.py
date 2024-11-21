@@ -1,9 +1,9 @@
-from tjpw_schedule.domain.schedule_external_api import (
+from tjpw_schedule.tjpw.domain.schedule_external_api import (
     ScheduleExternalApi,
 )
-from tjpw_schedule.domain.scraper import Scraper
-from tjpw_schedule.usecase.request.scrape_range import ScrapeRange
-from tjpw_schedule.usecase.service.scrape_show import ScrapeShow
+from tjpw_schedule.tjpw.domain.scraper import Scraper
+from tjpw_schedule.tjpw.usecase.request.scrape_range import ScrapeRange
+from tjpw_schedule.tjpw.usecase.service.scrape_show import ScrapeShow
 
 
 class ScrapeTjpw:

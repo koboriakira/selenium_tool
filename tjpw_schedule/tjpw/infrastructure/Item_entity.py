@@ -1,6 +1,13 @@
 from dataclasses import dataclass
 
-from tjpw_schedule.domain.schedule import Date, Note, SeatType, TournamentName, TournamentSchedule, Venue
+from tjpw_schedule.tjpw.domain.schedule import (
+    Date,
+    Note,
+    SeatType,
+    TournamentName,
+    TournamentSchedule,
+    Venue,
+)
 
 
 @dataclass(frozen=True)

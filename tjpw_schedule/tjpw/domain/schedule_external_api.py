@@ -5,7 +5,7 @@ from abc import ABCMeta, abstractmethod
 import requests
 
 from tjpw_schedule.custom_logging import get_logger
-from tjpw_schedule.domain.schedule import TournamentSchedule
+from tjpw_schedule.tjpw.domain.schedule import TournamentSchedule
 
 logger = get_logger(__name__)
 

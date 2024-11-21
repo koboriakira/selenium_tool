@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta, timezone
 
-from tjpw_schedule.domain.schedule_external_api import (
+from tjpw_schedule.tjpw.domain.schedule_external_api import (
     ScheduleExternalApi,
 )
-from tjpw_schedule.domain.scraper import DetailUrl, Scraper
+from tjpw_schedule.tjpw.domain.scraper import DetailUrl, Scraper
 
 
 class ScrapeShow:
