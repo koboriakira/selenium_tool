@@ -3,12 +3,12 @@ from datetime import datetime
 from enum import Enum
 from time import sleep
 
-from common.selenium_factory import SeleniumFactory
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
+from common.selenium_factory import SeleniumFactory
 from src.custom_logging import get_logger
 
 logger = get_logger(__name__)
@@ -172,4 +172,4 @@ class Itskenpo:
 
 if __name__ == "__main__":
     # python -m src.itskenpo.itskenpo
-    Itskenpo("http://localhost:4444").execute()
+    Itskenpo().execute()

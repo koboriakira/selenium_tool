@@ -33,3 +33,15 @@ class ScrapeTjpw:
             ]
 
             _ = [self._scrape_show.execute(detail_url) for detail_url in detail_urls]
+
+
+if __name__ == "__main__":
+    # python -m src.tjpw.usecase.scrape_tjpw
+    from src.tjpw.infrastructure.selenium_scraper import SeleniumScraper
+    from src.tjpw.usecase.request.scrape_range import ScrapeRange
+
+    controller = ScrapeTjpw(
+        scraper=SeleniumScraper(selenium_domain="http://localhost:4444"),
+        schedule_external_api_list=[],
+    )
+    controller.execute(ScrapeRange.create_default_instance(is_dev=True))
