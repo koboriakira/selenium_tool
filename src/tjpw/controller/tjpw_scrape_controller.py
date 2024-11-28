@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 class TjpwScrapeController:
     def scrape(self) -> None:
         logger.debug("Start main function")
-        range = ScrapeRange.create_default_instance(is_dev=True)
+        range = ScrapeRange.create_default_instance()
         scrape_tjpw_usecase = ScrapeTjpw(
             scraper=SeleniumScraper(),
             schedule_external_api_list=[ScheduleGoogleCalendarApi()],
