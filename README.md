@@ -45,14 +45,14 @@ Dockerコンテナ上で動作。
 docker-compose up -d
 
 # start_date, end_dateをイジって実行する
-docker-compose exec app python -m tjpw_schedule.infrastructure.selenium_scraper
+docker-compose exec app python -m src.infrastructure.selenium_scraper
 ```
 
 ### ローカルで実行する
 
 ```bash
 # .envについて SELENIUM_DOMAIN=http://localhost:4444 にしたうえで実行
-python -m tjpw_schedule
+python -m src
 ```
 
 ## CLIに組み込む
@@ -60,7 +60,7 @@ python -m tjpw_schedule
 ```shell
 # 東京女子のスケジュール更新
 function tjpw-update-schedule() {
-  cd ~/git/tjpw_schedule
+  cd ~/git/src
   docker-compose down
   docker-compose up -d chrome
   sleep 60

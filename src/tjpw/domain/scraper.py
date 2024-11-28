@@ -8,7 +8,7 @@ from logging import getLogger
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-from tjpw_schedule.tjpw.infrastructure.Item_entity import ItemEntity
+from src.tjpw.infrastructure.Item_entity import ItemEntity
 
 logger = getLogger(__name__)
 

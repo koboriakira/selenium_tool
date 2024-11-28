@@ -1,10 +1,10 @@
 from datetime import timedelta, timezone
 
-from tjpw_schedule.custom_logging import get_logger
-from tjpw_schedule.tjpw.domain.schedule_external_api import ScheduleGoogleCalendarApi
-from tjpw_schedule.tjpw.infrastructure.selenium_scraper import SeleniumScraper
-from tjpw_schedule.tjpw.usecase.request.scrape_range import ScrapeRange
-from tjpw_schedule.tjpw.usecase.scrape_tjpw import ScrapeTjpw
+from src.custom_logging import get_logger
+from src.tjpw.domain.schedule_external_api import ScheduleGoogleCalendarApi
+from src.tjpw.infrastructure.selenium_scraper import SeleniumScraper
+from src.tjpw.usecase.request.scrape_range import ScrapeRange
+from src.tjpw.usecase.scrape_tjpw import ScrapeTjpw
 
 JST = timezone(timedelta(hours=+9), "JST")
 logger = get_logger(__name__)
@@ -23,6 +23,6 @@ class TjpwScrapeController:
 
 
 if __name__ == "__main__":
-    # python -m tjpw_schedule.tjpw.controller.tjpw_scrape_controller
+    # python -m src.tjpw.controller.tjpw_scrape_controller
     controller = TjpwScrapeController()
     controller.scrape()

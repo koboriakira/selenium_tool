@@ -13,4 +13,4 @@ RUN \
   pip install requests>=2.31.0
 
 ENTRYPOINT [ "python" ]
-CMD [ "-m", "tjpw_schedule" ]
+CMD [ "-m", "src" ]

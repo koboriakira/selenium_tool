@@ -1,5 +1,5 @@
 from unittest import TestCase
-from tjpw_schedule.domain.scraper import ActiveTableItems, ActiveTableItem, ItemType
+from src.domain.scraper import ActiveTableItems, ActiveTableItem, ItemType
 
 
 class TestActiveTableItems(TestCase):

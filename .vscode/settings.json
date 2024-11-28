@@ -15,7 +15,9 @@
     "reportMissingTypeStubs": true,
     "useTypeStubForTypeshed": true
   },
-  "python.analysis.extraPaths": ["./tjpw_schedule"],
+  "python.analysis.extraPaths": [
+    "./src"
+  ],
   "python.analysis.fixAll": [
     "source.unusedImports",
     "source.convertImportFormat"

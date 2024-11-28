@@ -1,5 +1,5 @@
 from unittest import TestCase
-from tjpw_schedule.usecase.request.scrape_range import ScrapeRange
+from src.usecase.request.scrape_range import ScrapeRange
 from datetime import datetime
 
 

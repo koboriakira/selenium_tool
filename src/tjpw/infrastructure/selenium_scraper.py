@@ -6,9 +6,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-from tjpw_schedule.custom_logging import get_logger
-from tjpw_schedule.tjpw.domain.scraper import ActiveTableItems, DetailUrl, Scraper
-from tjpw_schedule.tjpw.infrastructure.Item_entity import ItemEntity
+from src.custom_logging import get_logger
+from src.tjpw.domain.scraper import ActiveTableItems, DetailUrl, Scraper
+from src.tjpw.infrastructure.Item_entity import ItemEntity
 
 logger = get_logger(__name__)
 SELENIUM_DOMAIN = os.environ.get("SELENIUM_DOMAIN", "http://localhost:4444")

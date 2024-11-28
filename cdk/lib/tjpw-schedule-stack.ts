@@ -45,7 +45,7 @@ export class TjpwScheduleStack extends cdk.Stack {
       cpu: 256,
     });
     const appContainer = appTaskDefinition.addContainer('AppContainer', {
-      image: ecs.ContainerImage.fromAsset('../docker/tjpw_schedule'),
+      image: ecs.ContainerImage.fromAsset('../docker/src'),
       environment: {
         SELENIUM_URL: `http://${chromeContainer.containerName}:4444`,
         TZ: 'Asia/Tokyo',

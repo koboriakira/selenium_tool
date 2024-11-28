@@ -4,8 +4,8 @@ from abc import ABCMeta, abstractmethod
 
 import requests
 
-from tjpw_schedule.custom_logging import get_logger
-from tjpw_schedule.tjpw.domain.schedule import TournamentSchedule
+from src.custom_logging import get_logger
+from src.tjpw.domain.schedule import TournamentSchedule
 
 logger = get_logger(__name__)
 

@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta, timezone
 
-from tjpw_schedule.tjpw.domain.schedule_external_api import (
+from src.tjpw.domain.schedule_external_api import (
     ScheduleExternalApi,
 )
-from tjpw_schedule.tjpw.domain.scraper import DetailUrl, Scraper
+from src.tjpw.domain.scraper import DetailUrl, Scraper
 
 
 class ScrapeShow:
@@ -27,9 +27,9 @@ class ScrapeShow:
 
 
 if __name__ == "__main__":
-    # python -m tjpw_schedule.usecase.service.scrape_show
-    from tjpw_schedule.domain.schedule_external_api import ScheduleGoogleCalendarApi
-    from tjpw_schedule.infrastructure.selenium_scraper import SeleniumScraper
+    # python -m src.usecase.service.scrape_show
+    from src.domain.schedule_external_api import ScheduleGoogleCalendarApi
+    from src.infrastructure.selenium_scraper import SeleniumScraper
 
     suite = ScrapeShow(
         scraper=SeleniumScraper(selenium_domain="http://localhost:4444"),
