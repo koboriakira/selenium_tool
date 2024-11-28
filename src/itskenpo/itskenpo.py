@@ -9,7 +9,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from tjpw_schedule.custom_logging import get_logger
+from src.custom_logging import get_logger
 
 logger = get_logger(__name__)
 SELENIUM_DOMAIN = os.environ.get("SELENIUM_DOMAIN", "http://localhost:4444")
@@ -164,12 +164,12 @@ class Itskenpo:
                     week_vacancies = self.proc_table(reservation.table_id())
                     vacancies.extend(week_vacancies)
 
-            # 
+            #
             print(vacancies)
         finally:
             self.quit()
 
 
 if __name__ == "__main__":
-    # python -m tjpw_schedule.itskenpo.itskenpo
+    # python -m src.itskenpo.itskenpo
     Itskenpo("http://localhost:4444").execute()

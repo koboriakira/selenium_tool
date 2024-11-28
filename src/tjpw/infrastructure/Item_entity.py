@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from tjpw_schedule.tjpw.domain.schedule import (
+from src.tjpw.domain.schedule import (
     Date,
     Note,
     SeatType,

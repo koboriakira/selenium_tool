@@ -7,7 +7,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from tjpw_schedule.custom_logging import get_logger
+from src.custom_logging import get_logger
 
 logger = get_logger(__name__)
 SELENIUM_DOMAIN = os.environ.get("SELENIUM_DOMAIN", "http://localhost:4444")

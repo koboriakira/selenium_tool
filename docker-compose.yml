@@ -23,7 +23,7 @@ services:
       - chrome
     build:
       context: .
-      dockerfile: ./docker/tjpw_schedule/Dockerfile
+      dockerfile: ./docker/src/Dockerfile
     volumes:
       - .:/app
     env_file:
