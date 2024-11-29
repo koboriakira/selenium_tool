@@ -1,6 +1,5 @@
 # @format
 
-version: "3.7"
 services:
   chrome:
     image: seleniarm/standalone-chromium:114.0
