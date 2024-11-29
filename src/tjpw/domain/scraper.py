@@ -7,7 +7,6 @@ from logging import getLogger
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-
 from src.tjpw.infrastructure.Item_entity import ItemEntity
 
 logger = getLogger(__name__)
@@ -30,7 +29,7 @@ class ItemType(Enum):
     # 備考
     NOTE = "備考"
 
-    def key(self):
+    def key(self) -> str:  # noqa: C901
         match self:
             case ItemType.TOURNAMENT_NAME:
                 return "tournament_name"
@@ -50,7 +49,7 @@ class ActiveTableItem:
     value: str
 
     @staticmethod
-    def from_web_element(element: WebElement):
+    def from_web_element(element: WebElement) -> "ActiveTableItem":
         element_title = element.find_element(By.CLASS_NAME, "Article_Table__title")
         item_type = ItemType(element_title.text)
         element_body = element.find_element(By.CLASS_NAME, "Article_Table__body")
@@ -63,7 +62,7 @@ class ActiveTableItems:
     items: list[ActiveTableItem]
 
     @staticmethod
-    def from_web_elements(url: str, elements: list[WebElement]):
+    def from_web_elements(url: str, elements: list[WebElement]) -> "ActiveTableItems":
         return ActiveTableItems(
             url=url,
             items=[ActiveTableItem.from_web_element(element) for element in elements],
