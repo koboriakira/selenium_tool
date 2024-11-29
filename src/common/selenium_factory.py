@@ -10,25 +10,29 @@ logger = get_logger(__name__)
 SELENIUM_DOMAIN = os.environ.get("SELENIUM_DOMAIN", "http://localhost:4444")
 WAIT_TIME = 5
 
+driver = None
+
 
 class SeleniumFactory:
-    def __init__(self, selenium_domain: str | None = None) -> None:
+    @staticmethod
+    def is_healthy(selenium_domain: str | None = None) -> bool:
         # Seleniumが起動しているか確認
-        self._selenium_domain = selenium_domain or SELENIUM_DOMAIN
-        selenium_url = self._selenium_domain + "/wd/hub/status"
+        selenium_domain = selenium_domain or SELENIUM_DOMAIN
+        selenium_url = selenium_domain + "/wd/hub/status"
         response = requests.get(selenium_url, timeout=10)
         if not response.ok or not response.json()["value"]["ready"]:
             msg = "Selenium is not ready. url: " + selenium_url
             logger.exception(msg)
-            raise Exception(msg)
-        self._driver = None
+            return False
+        return True
 
-    def get_driver(self) -> WebDriver:
+    @staticmethod
+    def get_driver(selenium_domain: str | None = None) -> WebDriver:
         """Seleniumのドライバーを取得"""
-        if self._driver is None:
-            self._driver = webdriver.Remote(
-                command_executor=self._selenium_domain,
-                options=webdriver.ChromeOptions(),
-            )
-            self._driver.implicitly_wait(WAIT_TIME)
-        return self._driver
+        selenium_domain = selenium_domain or SELENIUM_DOMAIN
+        driver = webdriver.Remote(
+            command_executor=selenium_domain,
+            options=webdriver.ChromeOptions(),
+        )
+        driver.implicitly_wait(WAIT_TIME)
+        return driver
