@@ -14,7 +14,6 @@ class ShowScraper:
         """
         試合詳細を取得
         """
-        """試合詳細を取得"""
         driver = SeleniumFactory.get_driver()
         try:
             driver.get(url)
