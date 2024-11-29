@@ -31,7 +31,7 @@ class ScrapeRange:
         end_month = self.end_date.month
 
         target_date = self.start_date
-        while target_date.year < end_year or target_date.month <= end_month:
+        while target_date.year < end_year or (target_date.year == end_year and target_date.month <= end_month):
             date_list.append(target_date)
             target_date += relativedelta(months=1)
         return [date.strftime("%Y%m") for date in date_list]
