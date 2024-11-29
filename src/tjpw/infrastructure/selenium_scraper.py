@@ -6,7 +6,7 @@ from src.tjpw.domain.scraper import DetailUrl, Scraper
 
 from common.printer import Printer
 from tjpw.domain.schedule import TournamentSchedule
-from tjpw.infrastructure.scrape_schedules import ScrapeSchedules
+from tjpw.infrastructure.schedule_scraper import ScheduleScraper
 from tjpw.infrastructure.show_scraper import ShowScraper
 
 logger = get_logger(__name__)
@@ -24,7 +24,7 @@ class SeleniumScraper(Scraper):
         target_month: int,
     ) -> list[DetailUrl]:
         url = self._generate_get_detail_api_url(target_year, target_month)
-        scraped_results = ScrapeSchedules(self._printer).execute(url)
+        scraped_results = ScheduleScraper(self._printer).execute(url)
         details: list[DetailUrl] = []
         for result in scraped_results:
             href = result["href"]
