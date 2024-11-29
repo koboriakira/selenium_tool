@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta, timezone
-
 from src.tjpw.domain.schedule_external_api import (
     ScheduleExternalApi,
 )
@@ -24,21 +22,3 @@ class ScrapeShow:
         # 注入したAPIの分、登録処理を行う
         for schedule_external_api in self.schedule_external_api_list:
             schedule_external_api.save(tournament_schedule)
-
-
-if __name__ == "__main__":
-    # python -m src.usecase.service.scrape_show
-    from src.domain.schedule_external_api import ScheduleGoogleCalendarApi
-    from src.infrastructure.selenium_scraper import SeleniumScraper
-
-    suite = ScrapeShow(
-        scraper=SeleniumScraper(selenium_domain="http://localhost:4444"),
-        schedule_external_api_list=[ScheduleGoogleCalendarApi()],
-    )
-    JST = timezone(timedelta(hours=+9), "JST")
-    suite.execute(
-        DetailUrl(
-            value="https://www.ddtpro.com/schedules/22723",
-            date=datetime(2024, 8, 23, tzinfo=JST),
-        )
-    )
