@@ -3,7 +3,6 @@ import os
 from abc import ABCMeta, abstractmethod
 
 import requests
-
 from src.custom_logging import get_logger
 from src.tjpw.domain.schedule import TournamentSchedule
 
@@ -52,16 +51,11 @@ class ScheduleGoogleCalendarApi(ScheduleExternalApi):
             "end": schedule.end_datetime.isoformat(),
             "detail": schedule.convert_to_detail(),
         }
-
         logger.debug(
-            f"ScheduleGoogleCalendarApi#save: {schedule.tournament_name.value}"
+            "ScheduleGoogleCalendarApi#save %s",
+            schedule.tournament_name.value,
         )
-        logger.info(
-            f"Googleカレンダーに登録します。大会名: {schedule.tournament_name.value}, \
-                開催日: {schedule.open_datetime.isoformat()}",
-        )
-        result = self.post(url=self.domain + "schedule", data=json_data)
-        print(result)
+        _result = self.post(url=self.domain + "schedule", data=json_data)
 
 
 class ScheduleNotionApi(ScheduleExternalApi):

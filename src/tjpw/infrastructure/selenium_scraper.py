@@ -4,6 +4,7 @@ from datetime import datetime
 from src.custom_logging import get_logger
 from src.tjpw.domain.scraper import DetailUrl, Scraper
 
+from common.printer import Printer
 from tjpw.domain.schedule import TournamentSchedule
 from tjpw.infrastructure.scrape_schedules import ScrapeSchedules
 from tjpw.infrastructure.show_scraper import ShowScraper
@@ -14,18 +15,21 @@ WAIT_TIME = 5
 
 
 class SeleniumScraper(Scraper):
+    def __init__(self, printer: Printer) -> None:
+        self._printer = printer
+
     def get_detail_urls(
         self,
         target_year: int,
         target_month: int,
     ) -> list[DetailUrl]:
         url = self._generate_get_detail_api_url(target_year, target_month)
-        scraped_results = ScrapeSchedules().execute(url)
+        scraped_results = ScrapeSchedules(self._printer).execute(url)
         details: list[DetailUrl] = []
         for result in scraped_results:
             href = result["href"]
             if "schedules" not in href:
-                print(f"試合以外の予定のため除外 {result}")
+                self._printer.print(f"試合以外の予定のため除外 {result}")
                 continue
             date_str = result["date"]
             date_ = datetime.strptime(date_str, "%YYear%mMonth%dDate(%A)")  # noqa: DTZ007
@@ -34,7 +38,7 @@ class SeleniumScraper(Scraper):
 
     def scrape_detail(self, url: str) -> TournamentSchedule:
         """試合詳細を取得"""
-        scraped_result = ShowScraper().execute(url)
+        scraped_result = ShowScraper(self._printer).execute(url)
         return TournamentSchedule.from_dict(scraped_result)
 
     def _generate_get_detail_api_url(self, target_year: int, target_month: int) -> str:
