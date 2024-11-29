@@ -1,29 +1,27 @@
 from unittest import TestCase
-from src.domain.scraper import ActiveTableItems, ActiveTableItem, ItemType
+
+from tjpw.domain.scraper import ActiveTableItems
 
 
 class TestActiveTableItems(TestCase):
     def test_convert(self):
         # Given
-        url = "https://www.ddtpro.com/schedules/21886"
-        active_table_item_list = [
-            ActiveTableItem(ItemType.TOURNAMENT_NAME, "TJPW LIVE TOUR 2024 SPRING"),
-            ActiveTableItem(
-                ItemType.DATE, "2024年3月16日(土)\u3000開場11:30\u3000開始12:00"
-            ),
-            ActiveTableItem(ItemType.VENUE, "神奈川・横浜ラジアントホール"),
-            ActiveTableItem(
-                ItemType.SEAT_TYPE,
-                "■チケット\n－前売り－\nスーパーシート 7,500円\n特別リングサイド 5,500円\n指定席 4,500円\nレディースシート 2,000円\n－当日－\nスーパーシート 8,000円\n特別リングサイド 6,000円\n指定席 5,000円\nレディースシート 2,500円\nU-18チケット 1,000円（要身分証）\n\n■販売場所\n公式チケット購入フォーム、チケットぴあ、ローソンチケット、e+\n※UNIVERSE会員先行受付＝2024年1月11日(木)12:00～1月15日(月)12:00、会場先行販売＝1月27日両国KFCホール大会、一般販売＝1月28日(日)～。",
-            ),
+        scraped_results = [
+            {"key": "url", "value": "https://www.ddtpro.com/schedules/23289"},
+            {"key": "大会名", "value": "桐生真弥地元凱旋興行〜とうきょうじょしのやぼう〜"},
+            {"key": "日時", "value": "2024年11月3日(日)　開場12:30　開始13:00"},
+            {"key": "会場", "value": "群馬・Gメッセ群馬メインホールC（高崎市）"},
+            {
+                "key": "席種",
+                "value": "■チケット\n－前売り－\nスーパーシート7,500円　完売\n特別リングサイド5,500円　完売\n指定席4,500円　完売\nレディースシート2,000円　完売\n\n■販売場所\n公式チケット購入フォーム、チケットぴあ、ローソンチケット、e+\n※UNIVERSE会員先行受付＝2024年8月15日(木)12:00～8月19日(月)12:00、一般販売＝8月31日(土)～。",
+            },
+            {
+                "key": "備考",
+                "value": "■全対戦カード\n○山下実優＆宮本もか　vs　上福ゆき＆桐生真弥\n○渡辺未詩＆らく＆鈴木志乃　vs　瑞希＆愛野ユキ＆風城ハル\n○「ねくじぇねトーナメント'24」1回戦\n上原わかな　vs　七瀬千花\n○長谷川美子　vs　高見汐珠\n○伊藤麻希＆キラ・サマー　vs　中島翔子＆HIMAWARI\n○鈴芽＆猫はるな　vs　鳥喰かや＆凍雅\n○3WAYマッチ\n辰巳リカ　vs　原宿ぽむ　vs　遠藤有栖",
+            },
         ]
-        active_table_items = ActiveTableItems(url=url, items=active_table_item_list)
-
         # When
-        entity = active_table_items.to_entity_with_url()
-        actual = entity.convert_to_tournament_schedule()
-
-        print(actual)
+        actual = ActiveTableItems.from_scraped_result(scraped_results)
 
         # Then
         self.assertEqual(actual.url, url)

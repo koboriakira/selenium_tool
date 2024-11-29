@@ -22,14 +22,11 @@ class Date:
         match = re.search(r"\d+年\d+月\d+日", self.value)
         if match:
             # 2023年10月9日のような文字列を2023-10-9のような文字列に変換
-            date_str = (
-                match.group().replace("年", "-").replace("月", "-").replace("日", "")
-            )
+            date_str = match.group().replace("年", "-").replace("月", "-").replace("日", "")
             # isoformatな文字列に変換。0埋めできてない箇所を埋める。例: 2023-10-9 -> 2023-10-09
             date_str = "-".join([f"{int(d):02d}" for d in date_str.split("-")])
             return date.fromisoformat(date_str)
-        else:
-            raise ValueError("日付の文字列から日付を取得できませんでした")
+        raise ValueError("日付の文字列から日付を取得できませんでした")
 
     @property
     def open_time(self) -> time:
@@ -70,6 +67,13 @@ class Note:
     value: str
 
 
+def find_value(params: list[dict[str, str]], key: str) -> str:
+    for param in params:
+        if param["key"] == key:
+            return param["value"]
+    return ""
+
+
 @dataclass(frozen=True)
 class TournamentSchedule:
     url: str
@@ -77,7 +81,18 @@ class TournamentSchedule:
     date: Date
     venue: Venue
     seat_type: SeatType
-    note: Note | None = None
+    note: Note
+
+    @staticmethod
+    def from_dict(params: list[dict[str, str]]) -> "TournamentSchedule":
+        return TournamentSchedule(
+            url=find_value(params, "url"),
+            tournament_name=TournamentName(find_value(params, "大会名")),
+            date=Date(find_value(params, "日時")),
+            venue=Venue(find_value(params, "会場")),
+            seat_type=SeatType(find_value(params, "席種")),
+            note=Note(find_value(params, "備考")),
+        )
 
     def overview(self) -> str:
         """席種、備考を除いた試合の概要を取得"""
@@ -87,9 +102,7 @@ class TournamentSchedule:
         """カレンダー登録用の詳細文を作成"""
         # URLと会場、座席と備考欄を合成する
         note_str = self.note.value if self.note else ""
-        return (
-            f"{self.url}\n\n{self.venue.value}\n\n{self.seat_type.value}\n\n{note_str}"
-        )
+        return f"{self.url}\n\n{self.venue.value}\n\n{self.seat_type.value}\n\n{note_str}"
 
     @property
     def open_datetime(self) -> datetime:

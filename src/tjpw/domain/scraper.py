@@ -9,6 +9,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from src.tjpw.infrastructure.Item_entity import ItemEntity
 
+from tjpw.domain.schedule import TournamentSchedule
+
 logger = getLogger(__name__)
 
 SELENIUM_DOMAIN = os.environ.get("SELENIUM_DOMAIN", "http://localhost:4444")
@@ -62,7 +64,7 @@ class ActiveTableItems:
     items: list[ActiveTableItem]
 
     @staticmethod
-    def from_web_elements(url: str, elements: list[WebElement]) -> "ActiveTableItems":
+    def from_scraped_result(result: list[dict[str, str]]) -> "ActiveTableItems":
         return ActiveTableItems(
             url=url,
             items=[ActiveTableItem.from_web_element(element) for element in elements],
@@ -81,14 +83,6 @@ class DetailUrl:
     value: str
     date: datetime
 
-    def is_in_date_range(self, start_date: datetime, end_date: datetime) -> bool:
-        """start_dateからend_dateの範囲内にあるか"""
-        return start_date.timestamp() <= self.date.timestamp() <= end_date.timestamp()
-
-    def is_schedule(self) -> bool:
-        """試合情報のURLかどうか。たとえば選手プロフィールのURLなどは除外するため。"""
-        return self.value.startswith("https://www.ddtpro.com/schedules")
-
 
 class Scraper(metaclass=ABCMeta):
     DDTPRO_SCHEDULES = "https://www.ddtpro.com/schedules"
@@ -102,5 +96,5 @@ class Scraper(metaclass=ABCMeta):
         """試合詳細のURLを取得"""
 
     @abstractmethod
-    def scrape_detail(self, url: str) -> ItemEntity:
+    def scrape_detail(self, url: str) -> TournamentSchedule:
         """試合詳細を取得"""

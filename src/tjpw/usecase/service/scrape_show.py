@@ -15,10 +15,3 @@ class ScrapeShow:
 
     def execute(self, detail_url: DetailUrl) -> None:
         """詳細をスクレイピングして登録する"""
-        # スクレイピング
-        item_entity = self.scraper.scrape_detail(detail_url.value)
-        tournament_schedule = item_entity.convert_to_tournament_schedule()
-
-        # 注入したAPIの分、登録処理を行う
-        for schedule_external_api in self.schedule_external_api_list:
-            schedule_external_api.save(tournament_schedule)

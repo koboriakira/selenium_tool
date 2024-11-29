@@ -14,20 +14,14 @@ logger = get_logger(__name__)
 
 class TjpwScrapeController:
     def scrape(self) -> None:
-        "Start main function"
         if not SeleniumFactory.is_healthy():
             print("Selenium is not healthy")
             return
-        range = ScrapeRange.create_default_instance()
-        driver = SeleniumFactory.get_driver()
-        scraper = SeleniumScraper(driver=driver)
         scrape_tjpw_usecase = ScrapeTjpw(
-            scraper=scraper,
+            scraper=SeleniumScraper(),
             schedule_external_api_list=[ScheduleGoogleCalendarApi()],
         )
-        scrape_tjpw_usecase.execute(range)
-        ("End main function")
-        driver.quit()
+        scrape_tjpw_usecase.execute(ScrapeRange.create_default_instance())
 
 
 if __name__ == "__main__":
