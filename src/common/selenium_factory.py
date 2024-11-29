@@ -21,12 +21,14 @@ class SeleniumFactory:
             msg = "Selenium is not ready. url: " + selenium_url
             logger.exception(msg)
             raise Exception(msg)
+        self._driver = None
 
     def get_driver(self) -> WebDriver:
         """Seleniumのドライバーを取得"""
-        driver = webdriver.Remote(
-            command_executor=self._selenium_domain,
-            options=webdriver.ChromeOptions(),
-        )
-        driver.implicitly_wait(WAIT_TIME)
-        return driver
+        if self._driver is None:
+            self._driver = webdriver.Remote(
+                command_executor=self._selenium_domain,
+                options=webdriver.ChromeOptions(),
+            )
+            self._driver.implicitly_wait(WAIT_TIME)
+        return self._driver
