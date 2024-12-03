@@ -1,5 +1,7 @@
+from common.printer import CliPrinter
 from common.selenium_factory import NotReadyError, SeleniumFactory
-from itskenpo.itskenpo import Itskenpo
+from itskenpo.check_reservation_usecase import CheckReservationUseCase
+from itskenpo.visitor import Visitor
 
 
 def main() -> None:
@@ -8,7 +10,8 @@ def main() -> None:
     except NotReadyError:
         print("Seleniumのコンテナが起動していません")
         return
-    Itskenpo().execute()
+    usecase = CheckReservationUseCase(visitor=Visitor(), printer=CliPrinter())
+    usecase.execute()
 
 
 if __name__ == "__main__":
