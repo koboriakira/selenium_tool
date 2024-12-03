@@ -36,3 +36,4 @@ packages = ["src"]
 
 [project.scripts]
 update_tjpw_schedule = "src.cli.update_tjpw_schedule:main"
+itskenpo = "src.cli.itskenpo:main"
