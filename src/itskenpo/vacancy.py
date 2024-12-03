@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import ClassVar
 
 
 class VacancyType(Enum):
@@ -47,10 +46,18 @@ class Vacancy:
 
 @dataclass
 class Vacancies:
-    values: ClassVar[list[Vacancy]] = []
+    values: list[Vacancy]
 
-    def filter_empty_or_limited(self) -> list[Vacancy]:
-        return [v for v in self.values if v.type_ != VacancyType.FULL]
+    @staticmethod
+    def empty() -> "Vacancies":
+        return Vacancies([])
+
+    def filter_empty_or_limited(self) -> "Vacancies":
+        values = [v for v in self.values if v.type_ != VacancyType.FULL]
+        return Vacancies(values)
 
     def append(self, vacancy: Vacancy) -> None:
         self.values.append(vacancy)
+
+    def is_not_empty(self) -> bool:
+        return len(self.values) > 0

@@ -1,6 +1,7 @@
 import logging
 from logging import getLogger
 
+from common import slack
 from common.printer import CliPrinter, Printer
 from itskenpo.reservation_type import ReservationType
 from itskenpo.vacancy import Vacancies, Vacancy
@@ -19,7 +20,7 @@ class CheckReservationUseCase:
             # ページを開く
             self._visitor.access_restaurant("鮨一新")
 
-            vacancies = Vacancies()
+            vacancies = Vacancies.empty()
             for i in range(weeks + 1):
                 self._printer.print(f"{i + 1}週目")
 
@@ -35,7 +36,9 @@ class CheckReservationUseCase:
                         vacancies.append(vacancy)
                 self._visitor.click_next_week()
 
-            self._printer.print(vacancies.filter_empty_or_limited())
+            if vacancies.filter_empty_or_limited().is_not_empty():
+                slack.post_to_dm("鮨一新の空きがあるので確認する")
+
         finally:
             self._visitor.quit()
 
