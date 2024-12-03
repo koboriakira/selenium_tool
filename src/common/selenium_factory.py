@@ -13,9 +13,13 @@ WAIT_TIME = 5
 driver = None
 
 
+class NotReadyError(Exception):
+    pass
+
+
 class SeleniumFactory:
     @staticmethod
-    def is_healthy(selenium_domain: str | None = None) -> bool:
+    def validate(selenium_domain: str | None = None) -> None:
         # Seleniumが起動しているか確認
         selenium_domain = selenium_domain or SELENIUM_DOMAIN
         selenium_url = selenium_domain + "/wd/hub/status"
@@ -23,8 +27,7 @@ class SeleniumFactory:
         if not response.ok or not response.json()["value"]["ready"]:
             msg = "Selenium is not ready. url: " + selenium_url
             logger.exception(msg)
-            return False
-        return True
+            raise NotReadyError(msg)
 
     @staticmethod
     def get_driver(selenium_domain: str | None = None) -> WebDriver:
