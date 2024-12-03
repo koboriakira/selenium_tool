@@ -57,27 +57,33 @@ python -m src
 
 ## CLIに組み込む
 
-```shell
-# 東京女子のスケジュール更新
-function tjpw-update-schedule() {
-  cd ~/git/src
-  docker-compose down
-  docker-compose up -d chrome
-  sleep 60
-  echo "[TJPW-UPDATE-SCHEDULE] 実行します"
-  docker-compose up app
+### 逃去女子のスケジュール更新
 
-  # 上の処理が失敗した場合はここで終了
+```shell
+function tjpw-update-schedule() {
+  # 要update_tjpw_schedule関数(selenium_tool)
+
+  # seleniumコンテナを立ち上げる
+  CONTAINER_NAME="chrome-for-tjpw"
+  docker run -d \
+    --name $CONTAINER_NAME \
+    -p 4444:4444 \
+    --shm-size="2g" \
+    -e TZ=Asia/Tokyo \
+    seleniarm/standalone-chromium:114.0
+  sleep 5
+
+  # 実行
+  echo "[TJPW-UPDATE-SCHEDULE] 実行します"
+  update_tjpw_schedule
   if [ $? -ne 0 ]; then
-    slack-post "[TJPW-UPDATE-SCHEDULE] Failed to update TJPW schedule."
-    docker-compose down
-    cd $OLDPWD
-    return 1
+    slack-post "[TJPW-UPDATE-SCHEDULE] 処理に失敗しました"
   fi
 
-  docker-compose down
-  echo "[TJPW-UPDATE-SCHEDULE] 終了しました"
-  cd $OLDPWD
-}
+  # seleniumコンテナを停止、削除
+  docker stop $CONTAINER_NAME
+  docker rm -f $CONTAINER_NAME
 
+  echo "[TJPW-UPDATE-SCHEDULE] 終了しました"
+}
 ```
