@@ -27,6 +27,8 @@ services:
       - .:/app
     env_file:
       - .env
+    environment:
+      - SELENIUM_DOMAIN=http://chrome:4444
     tty: true
     networks:
       - default
