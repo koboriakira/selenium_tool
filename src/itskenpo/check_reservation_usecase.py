@@ -3,7 +3,7 @@ from logging import getLogger
 
 from common import slack
 from common.printer import CliPrinter, Printer
-from itskenpo.reservation_type import ReservationType
+from itskenpo.reservation_type import SushiReservationType
 from itskenpo.vacancy import Vacancies, Vacancy
 from itskenpo.visitor import Visitor
 
@@ -25,7 +25,7 @@ class CheckReservationUseCase:
                 self._printer.print(f"{i + 1}週目")
 
                 # 予約種別(時間・席別)のタブをクリックして空きを調査
-                for reservation in ReservationType:
+                for reservation in SushiReservationType:
                     self._printer.print(f"{reservation.label()}を調査")
                     self._visitor.click_tab(reservation.tab_id())
                     tbody_props = self._visitor.get_table_properties(reservation.table_id())
@@ -47,6 +47,6 @@ if __name__ == "__main__":
     # python -m src.itskenpo.check_reservation_usecase
     logger = getLogger(__name__)
     logger.setLevel(logging.DEBUG)
-    visitor = Visitor(logger=logger, wait_time=1)
+    visitor = Visitor(selenium_domain="http://localhost:4444", logger=logger, wait_time=1)
     usecase = CheckReservationUseCase(visitor)
     usecase.execute(weeks=0)

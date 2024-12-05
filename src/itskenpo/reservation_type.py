@@ -4,6 +4,9 @@ from enum import Enum
 class ReservationType(Enum):
     """予約種別"""
 
+class SushiReservationType(ReservationType):
+    """予約種別"""
+
     DINNER_17_TABLE = {  # noqa: RUF012
         "label": "ディナー17時・テーブル席",
         "tab_id": "link-2037",
