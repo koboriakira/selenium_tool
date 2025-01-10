@@ -36,12 +36,15 @@ class ScheduleScraper:
                 date_row = element.find_element(By.CLASS_NAME, "Itemrow__date")
                 result.append({"href": href, "date": date_row.text})
             return result
+        except Exception:
+            self.printer.print(f"スケジュール一覧の取得に失敗しました {url}")
+            raise
         finally:
             driver.quit()
 
 
 if __name__ == "__main__":
     # python -m src.tjpw.infrastructure.schedule_scraper
-    sample_url = "https://www.ddtpro.com/schedules?teamId=tjpw&yyyymm=202412"
+    sample_url = "https://www.ddtpro.com/schedules?teamId=tjpw&yyyymm=202503"
     printer = CliPrinter()
     print(ScheduleScraper(printer=printer).execute(sample_url))
