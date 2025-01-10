@@ -1,13 +1,13 @@
 from time import sleep
 
+from common.printer import CliPrinter, Printer
 from src.tjpw.domain.schedule_external_api import (
     ScheduleExternalApi,
 )
 from src.tjpw.domain.scraper import Scraper
 from src.tjpw.usecase.request.scrape_range import ScrapeRange
 from src.tjpw.usecase.service.scrape_show import ScrapeShow
-
-from common.printer import CliPrinter, Printer
+from tjpw.const import IGNORE_URLS
 
 
 class ScrapeTjpw:
@@ -32,7 +32,7 @@ class ScrapeTjpw:
                 target_month=int(target_yyyymm[4:]),
             )
             # 検索範囲内に絞る
-            detail_urls = [d for d in detail_urls if range.is_in(d.date)]
+            detail_urls = [d for d in detail_urls if d.value not in IGNORE_URLS and range.is_in(d.date)]
 
             for detail_url in detail_urls:
                 # スクレイピング
@@ -59,4 +59,4 @@ if __name__ == "__main__":
         schedule_external_api_list=[],
         printer=CliPrinter(),
     )
-    controller.execute(ScrapeRange.create_default_instance(is_dev=True))
+    controller.execute(ScrapeRange.create_default_instance(is_dev=False))
